@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inventory</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 min-h-screen">
+    <div class="max-w-5xl mx-auto p-6">
+        <div class="flex justify-between items-center mb-6">
+            <h1 class="text-2xl font-bold">Data Inventaris</h1>
+            <a href="/logout" class="text-red-500">Logout</a>
+        </div>
+
+        <a href="/inventory/export/pdf" class="bg-indigo-500 text-white px-4 py-2 rounded hover:bg-indigo-600">Cetak PDF</a>
+
+        {{if eq .Role "admin"}}
+        <form action="/inventory/create" method="POST" class="mt-6 space-y-4">
+            <input type="text" name="name" placeholder="Nama" class="w-full p-2 border rounded">
+            <input type="text" name="category" placeholder="Kategori" class="w-full p-2 border rounded">
+            <input type="number" name="quantity" placeholder="Jumlah" class="w-full p-2 border rounded">
+            <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">Tambah</button>
+        </form>
+        {{end}}
+
+        <table class="w-full mt-8 table-auto border-collapse">
+            <thead>
+                <tr class="bg-gray-200">
+                    <th class="border p-2">Nama</th>
+                    <th class="border p-2">Kategori</th>
+                    <th class="border p-2">Jumlah</th>
+                    {{if eq .Role "admin"}}<th class="border p-2">Aksi</th>{{end}}
+                </tr>
+            </thead>
+            <tbody>
+                {{range .Items}}
+                <tr class="bg-white hover:bg-gray-100">
+                    <td class="border p-2">{{.Name}}</td>
+                    <td class="border p-2">{{.Category}}</td>
+                    <td class="border p-2">{{.Quantity}}</td>
+                    {{if eq $.Role "admin"}}
+                    <td class="border p-2">
+                        <form action="/inventory/update/{{.ID}}" method="POST" class="inline-block">
+                            <input type="text" name="name" value="{{.Name}}" class="p-1 border rounded">
+                            <input type="text" name="category" value="{{.Category}}" class="p-1 border rounded">
+                            <input type="number" name="quantity" value="{{.Quantity}}" class="p-1 border rounded">
+                            <button type="submit" class="bg-yellow-500 text-white px-2 py-1 rounded">Update</button>
+                        </form>
+                        <a href="/inventory/delete/{{.ID}}" class="ml-2 text-red-500">Hapus</a>
+                    </td>
+                    {{end}}
+                </tr>
+                {{end}}
+            </tbody>
+        </table>
+    </div>
+</body>
+</html>
